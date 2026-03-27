@@ -12,7 +12,7 @@ export async function Navbar() {
   const homeData = response.status === 200 ? response.data : null;
 
   const workoutLink = homeData?.todayWorkoutDay 
-    ? `/workout-plans/${homeData.todayWorkoutDay.workoutPlanId}/days/${homeData.todayWorkoutDay.id}`
+    ? `/workout-plans/${homeData.todayWorkoutDay.workoutPlanId}`
     : '#';
 
   return (
