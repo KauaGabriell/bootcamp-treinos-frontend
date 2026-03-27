@@ -8,6 +8,7 @@ import Link from 'next/link';
 import { Timer, Dumbbell, Calendar, Flame } from 'lucide-react';
 import { Navbar } from '@/components/navbar';
 import { ConsistencyIndicator } from '@/components/consistency-indicator';
+import { WorkoutDayCard } from '@/components/workout-day-card';
 
 // Imagem do Banner do Figma
 const imgBanner = "https://www.figma.com/api/mcp/asset/972d2276-559c-448e-be80-0d9683004201";
@@ -133,47 +134,15 @@ export default async function Home() {
         </div>
 
         {homeData.todayWorkoutDay ? (
-          <Link href={`/workout/${homeData.todayWorkoutDay.id}`} className="block relative h-[200px] w-full rounded-[12px] overflow-hidden group">
-            <Image
-              src={homeData.todayWorkoutDay.coverImageUrl || "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=1470&auto=format&fit=crop"}
-              alt={homeData.todayWorkoutDay.name}
-              fill
-              className="object-cover group-hover:scale-105 transition-transform duration-500"
-              unoptimized
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
-            
-            <div className="absolute inset-0 p-5 flex flex-col justify-between">
-              <div className="flex justify-start">
-                <div className="bg-white/20 backdrop-blur-md px-3 py-1 rounded-full flex items-center gap-1">
-                  <Calendar className="w-3.5 h-3.5 text-white" />
-                  <span className="text-[10px] text-white font-bold uppercase">
-                    {todayNamePt}
-                  </span>
-                </div>
-              </div>
-
-              <div className="flex flex-col gap-1">
-                <h3 className="text-white text-2xl font-semibold font-[family-name:var(--font-inter-tight)]">
-                  {homeData.todayWorkoutDay.name}
-                </h3>
-                <div className="flex gap-3">
-                  <div className="flex items-center gap-1">
-                    <Timer className="w-3.5 h-3.5 text-white/70" />
-                    <span className="text-white/70 text-xs">
-                      {Math.floor(homeData.todayWorkoutDay.estimatedDurationInSeconds / 60)}min
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <Dumbbell className="w-3.5 h-3.5 text-white/70" />
-                    <span className="text-white/70 text-xs">
-                      {homeData.todayWorkoutDay.exercisesCount} exercícios
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </Link>
+          <WorkoutDayCard
+            workoutPlanId={homeData.todayWorkoutDay.workoutPlanId}
+            workoutDayId={homeData.todayWorkoutDay.id}
+            name={homeData.todayWorkoutDay.name}
+            weekDay={todayNamePt}
+            coverImageUrl={homeData.todayWorkoutDay.coverImageUrl}
+            durationInSeconds={homeData.todayWorkoutDay.estimatedDurationInSeconds}
+            exercisesCount={homeData.todayWorkoutDay.exercisesCount}
+          />
         ) : (
           <div className="w-full h-[200px] bg-zinc-100 rounded-[12px] flex items-center justify-center border-2 border-dashed border-zinc-200">
             <p className="text-zinc-400 font-medium">Nenhum treino para hoje</p>

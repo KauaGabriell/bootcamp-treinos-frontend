@@ -7,6 +7,14 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "www.figma.com",
       },
+      {
+        protocol: "https",
+        hostname: "gw8hy3fdcv.ufs.sh",
+      },
+      {
+        protocol: "https",
+        hostname: "images.unsplash.com",
+      },
     ],
   },
 };
