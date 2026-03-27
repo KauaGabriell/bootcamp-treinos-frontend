@@ -39,7 +39,7 @@ export default async function WorkoutPlanPage({ params }: PageProps) {
   }
 
   const plan = response.data;
-  const mainCoverImage = "/images/mainCoverImage.jpg";
+  const mainCoverImage = "/images/mainCoverImage.png";
 
   const dayNamesPt: Record<string, string> = {
     MONDAY: 'SEG',

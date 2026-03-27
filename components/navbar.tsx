@@ -29,9 +29,9 @@ export async function Navbar() {
         <Sparkles className="w-6 h-6 text-white" />
       </div>
 
-      <button className="p-3">
+      <Link href="/stats" className="p-3">
         <BarChart2 className="w-6 h-6 text-[#656565]" />
-      </button>
+      </Link>
 
       <button className="p-3">
         <User className="w-6 h-6 text-[#656565]" />
