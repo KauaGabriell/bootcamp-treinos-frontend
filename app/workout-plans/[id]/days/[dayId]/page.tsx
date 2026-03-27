@@ -3,7 +3,7 @@ import { authClient } from '@/app/_lib/auth-client';
 import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 import Image from 'next/image';
-import { ChevronLeft, Timer, Dumbbell, Calendar, CheckCircle2 } from 'lucide-react';
+import { ChevronLeft, Timer, Dumbbell, Calendar } from 'lucide-react';
 import Link from 'next/link';
 import { ExerciseItem } from '@/components/exercise-item';
 import { WorkoutActionButtons } from '@/components/workout-action-buttons';
@@ -43,7 +43,7 @@ export default async function WorkoutDayPage({ params }: PageProps) {
   }
 
   const workoutDay = response.data;
-  const planData = planResponse.data;
+  
 
   // Lógica de sessões
   const activeSession = workoutDay.sessions.find(s => !s.completedAt);
