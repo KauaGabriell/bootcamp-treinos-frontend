@@ -206,11 +206,11 @@ export default async function StatsPage() {
             <div className="flex flex-row items-center p-[9px] gap-[7.5px] w-[34px] h-[34px] bg-[rgba(43,84,255,0.08)] rounded-[99px] shrink-0">
               <Hourglass className="w-4 h-4 text-[#2B54FF]" />
             </div>
-            <div className="flex flex-col justify-center items-center p-0 gap-1.5 w-[98px] h-10 shrink-0">
-              <span className="w-auto h-[17px] font-[family-name:var(--font-inter-tight)] font-semibold text-[24px] leading-[115%] text-black shrink-0">
+            <div className="flex flex-col justify-center items-center p-0 gap-1.5 w-full h-10 shrink-0">
+              <span className="w-auto h-[17px] font-[family-name:var(--font-inter-tight)] font-semibold text-[24px] leading-[115%] text-black shrink-0" style={{ leadingTrim: 'both', textEdge: 'cap' }}>
                 {formatTime(stats.totalTimeInSeconds)}
               </span>
-              <span className="w-[64px] h-[17px] font-[family-name:var(--font-inter-tight)] font-normal text-[12px] leading-[140%] text-[#656565] shrink-0 text-center whitespace-nowrap">
+              <span className="w-auto h-[17px] font-[family-name:var(--font-inter-tight)] font-normal text-[12px] leading-[140%] text-[#656565] shrink-0 text-center whitespace-nowrap">
                 Tempo total dedicado
               </span>
             </div>
