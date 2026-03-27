@@ -34,6 +34,9 @@ export default async function Home() {
   }
 
   const homeData = response.data;
+  const workoutLink = homeData?.todayWorkoutDay 
+    ? `/workout-plans/${homeData.todayWorkoutDay.workoutPlanId}`
+    : '#';
 
   // Calculamos o início da semana (Segunda-feira)
   // dayjs().day(1) retorna a segunda-feira da semana atual
@@ -149,7 +152,7 @@ export default async function Home() {
         )}
       </section>
 
-      <Navbar />
+      <Navbar workoutLink={workoutLink} />
     </main>
   );
 }
