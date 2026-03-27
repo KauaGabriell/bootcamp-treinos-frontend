@@ -207,7 +207,7 @@ export default async function StatsPage() {
               <Hourglass className="w-4 h-4 text-[#2B54FF]" />
             </div>
             <div className="flex flex-col justify-center items-center p-0 gap-1.5 w-full h-10 shrink-0">
-              <span className="w-auto h-[17px] font-[family-name:var(--font-inter-tight)] font-semibold text-[24px] leading-[115%] text-black shrink-0" style={{ leadingTrim: 'both', textEdge: 'cap' }}>
+              <span className="w-auto h-[17px] font-[family-name:var(--font-inter-tight)] font-semibold text-[24px] leading-[115%] text-black shrink-0">
                 {formatTime(stats.totalTimeInSeconds)}
               </span>
               <span className="w-auto h-[17px] font-[family-name:var(--font-inter-tight)] font-normal text-[12px] leading-[140%] text-[#656565] shrink-0 text-center whitespace-nowrap">
