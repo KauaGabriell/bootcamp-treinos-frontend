@@ -4,7 +4,7 @@ import { useChat } from '@ai-sdk/react';
 import { DefaultChatTransport } from 'ai';
 import { useQueryState, parseAsBoolean, parseAsString } from 'nuqs';
 import { Sparkles, X, Send } from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Streamdown } from 'streamdown';
 
 // Na v3 do @ai-sdk/react, UIMessage usa "parts" e não "content".
@@ -22,13 +22,18 @@ export function ChatBot() {
   
   const [inputValue, setInputValue] = useState('');
 
-  // @ai-sdk/react v3 usa sendMessage + DefaultChatTransport
-  const { messages, sendMessage, status } = useChat({
-    transport: new DefaultChatTransport({
-      api: `${process.env.NEXT_PUBLIC_API_URL}/ai`,
-      credentials: "include",
-    }),
-  });
+  // Estabilidade referencial: mesma instância do transport em todos os renders,
+  // evitando que o useChat perca o estado interno (this.state) do transport.
+  const transport = useMemo(
+    () =>
+      new DefaultChatTransport({
+        api: `${process.env.NEXT_PUBLIC_API_URL}/ai`,
+        credentials: "include",
+      }),
+    [],
+  );
+
+  const { messages, sendMessage, status } = useChat({ transport });
 
   const isLoading = status === 'submitted' || status === 'streaming';
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -100,9 +105,9 @@ export function ChatBot() {
             </div>
           )}
 
-          {messages.map((m) => (
+          {messages.map((m, index) => (
             <div 
-              key={m.id} 
+              key={`${m.id}-${index}`} 
               className={`flex flex-col ${m.role === 'user' ? 'items-end pl-12' : 'items-start pr-12'}`}
             >
               <div 
