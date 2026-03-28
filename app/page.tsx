@@ -152,7 +152,7 @@ export default async function Home() {
         )}
       </section>
 
-      <Navbar workoutLink={workoutLink} />
+      <Navbar />
     </main>
   );
 }

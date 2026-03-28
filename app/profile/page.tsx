@@ -14,13 +14,11 @@ import {
 import { useRouter } from 'next/navigation';
 import { Navbar } from '@/components/navbar';
 import { useEffect, useState } from 'react';
-import { getHomeDate, getMe } from '@/app/_lib/api/fetch-generated';
-import dayjs from 'dayjs';
+import { getMe } from '@/app/_lib/api/fetch-generated';
 
 export default function ProfilePage() {
   const router = useRouter();
   const { data: session } = authClient.useSession();
-  const [workoutLink, setWorkoutLink] = useState('#');
   
   const [metrics, setMetrics] = useState({
     weight: null as string | null,
@@ -29,19 +27,7 @@ export default function ProfilePage() {
     age: null as string | null,
   });
 
-  // 1. Busca Link do Treino (Consistência de Navegação)
-  useEffect(() => {
-    async function fetchWorkoutLink() {
-      const today = dayjs().format('YYYY-MM-DD');
-      const response = await getHomeDate(today);
-      if (response.status === 200 && response.data.todayWorkoutDay) {
-        setWorkoutLink(`/workout-plans/${response.data.todayWorkoutDay.workoutPlanId}`);
-      }
-    }
-    fetchWorkoutLink();
-  }, []);
-
-  // 2. Busca Dados Biométricos Dinâmicos
+  // Busca Dados Biométricos Dinâmicos
   useEffect(() => {
     async function fetchUserData() {
       try {
@@ -51,14 +37,12 @@ export default function ProfilePage() {
           const data = response.data;
           
           setMetrics({
-            // Conversão de Gramas para KG (se aplicável)
             weight: data.weightInGrams 
               ? (data.weightInGrams / 1000).toFixed(1).replace('.0', '') 
               : null,
             height: data.heightInCentimeters 
               ? String(data.heightInCentimeters) 
               : null,
-            // Conversão de Decimal (0.15) para Porcentagem (15%)
             bf: data.bodyFatPercentage 
               ? (data.bodyFatPercentage * 100).toFixed(1).replace('.0', '') 
               : null,
@@ -184,7 +168,7 @@ export default function ProfilePage() {
         </Button>
       </main>
 
-      <Navbar workoutLink={workoutLink} />
+      <Navbar />
     </div>
   );
 }
