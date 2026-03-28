@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { Home, Calendar, Sparkles, BarChart2, User } from 'lucide-react';
 import { usePathname } from 'next/navigation';
+import { useQueryState, parseAsBoolean } from 'nuqs';
 
 interface NavbarProps {
   workoutLink?: string;
@@ -10,6 +11,7 @@ interface NavbarProps {
 
 export function Navbar({ workoutLink = '#' }: NavbarProps) {
   const pathname = usePathname();
+  const [, setChatOpen] = useQueryState('chat_open', parseAsBoolean);
 
   const isActive = (path: string) => pathname === path;
 
@@ -23,9 +25,12 @@ export function Navbar({ workoutLink = '#' }: NavbarProps) {
         <Calendar className={`w-6 h-6 ${pathname.includes('/workout-plans') ? 'text-black' : 'text-[#999999]'}`} />
       </Link>
 
-      <div className="bg-[#2b54ff] p-4 rounded-full -mt-10 shadow-lg shadow-[#2b54ff]/20 cursor-pointer active:scale-95 transition-transform">
+      <button 
+        onClick={() => setChatOpen(true)}
+        className="bg-[#2b54ff] p-4 rounded-full -mt-10 shadow-lg shadow-[#2b54ff]/20 cursor-pointer active:scale-95 transition-transform"
+      >
         <Sparkles className="w-6 h-6 text-white" />
-      </div>
+      </button>
 
       <Link href="/stats" className="p-3">
         <BarChart2 className={`w-6 h-6 ${isActive('/stats') ? 'text-black' : 'text-[#999999]'}`} />

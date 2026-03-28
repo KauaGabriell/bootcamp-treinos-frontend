@@ -14,14 +14,22 @@ import {
 import { useRouter } from 'next/navigation';
 import { Navbar } from '@/components/navbar';
 import { useEffect, useState } from 'react';
-import { getHomeDate } from '@/app/_lib/api/fetch-generated';
+import { getHomeDate, getMe } from '@/app/_lib/api/fetch-generated';
 import dayjs from 'dayjs';
 
 export default function ProfilePage() {
   const router = useRouter();
   const { data: session } = authClient.useSession();
   const [workoutLink, setWorkoutLink] = useState('#');
+  
+  const [metrics, setMetrics] = useState({
+    weight: null as string | null,
+    height: null as string | null,
+    bf: null as string | null,
+    age: null as string | null,
+  });
 
+  // 1. Busca Link do Treino (Consistência de Navegação)
   useEffect(() => {
     async function fetchWorkoutLink() {
       const today = dayjs().format('YYYY-MM-DD');
@@ -31,6 +39,39 @@ export default function ProfilePage() {
       }
     }
     fetchWorkoutLink();
+  }, []);
+
+  // 2. Busca Dados Biométricos Dinâmicos
+  useEffect(() => {
+    async function fetchUserData() {
+      try {
+        const response = await getMe();
+        
+        if (response.status === 200 && response.data) {
+          const data = response.data;
+          
+          setMetrics({
+            // Conversão de Gramas para KG (se aplicável)
+            weight: data.weightInGrams 
+              ? (data.weightInGrams / 1000).toFixed(1).replace('.0', '') 
+              : null,
+            height: data.heightInCentimeters 
+              ? String(data.heightInCentimeters) 
+              : null,
+            // Conversão de Decimal (0.15) para Porcentagem (15%)
+            bf: data.bodyFatPercentage 
+              ? (data.bodyFatPercentage * 100).toFixed(1).replace('.0', '') 
+              : null,
+            age: data.age 
+              ? String(data.age) 
+              : null,
+          });
+        }
+      } catch (error) {
+        console.error('Erro ao carregar dados dinâmicos:', error);
+      }
+    }
+    fetchUserData();
   }, []);
 
   const handleLogout = async () => {
@@ -44,15 +85,6 @@ export default function ProfilePage() {
   };
 
   const user = session?.user;
-
-  // No futuro, esses dados virão do perfil/metadados do usuário via API
-  // Por enquanto, simulamos a ausência para mostrar o traço "-" conforme solicitado
-  const metrics = {
-    weight: null, // Ex: user?.weight
-    height: null, // Ex: user?.height
-    bf: null,     // Ex: user?.bf
-    age: null     // Ex: user?.age
-  };
 
   return (
     <div className="flex flex-col items-center bg-white min-h-screen pb-32 font-[family-name:var(--font-inter-tight)]">
@@ -69,7 +101,7 @@ export default function ProfilePage() {
         <div className="flex flex-row justify-between items-center w-full h-[52px]">
           <div className="flex flex-row items-center gap-3">
             <Avatar className="w-[52px] h-[52px] border-none">
-              <AvatarImage src={user?.image || ''} alt={user?.name} className="object-cover" />
+              <AvatarImage src={user?.image || undefined} alt={user?.name} className="object-cover" />
               <AvatarFallback className="bg-gray-100 font-semibold">{user?.name?.charAt(0)}</AvatarFallback>
             </Avatar>
             <div className="flex flex-col justify-center">

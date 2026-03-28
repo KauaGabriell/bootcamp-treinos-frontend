@@ -1,4 +1,7 @@
+'use client';
+
 import { HelpCircle, Zap } from 'lucide-react';
+import { useQueryState, parseAsBoolean, parseAsString } from 'nuqs';
 
 interface ExerciseItemProps {
   name: string;
@@ -9,6 +12,14 @@ interface ExerciseItemProps {
 }
 
 export function ExerciseItem({ name, sets, reps, restTimeInSeconds }: Omit<ExerciseItemProps, 'order'>) {
+  const [, setChatOpen] = useQueryState('chat_open', parseAsBoolean);
+  const [, setInitialMessage] = useQueryState('chat_initial_message', parseAsString);
+
+  const handleHelpClick = async () => {
+    await setInitialMessage(`Como executar o exercício ${name} corretamente?`);
+    await setChatOpen(true);
+  };
+
   return (
     <div className="flex items-center justify-between p-5 bg-white border border-[#f1f1f1] rounded-[12px] shadow-sm">
       <div className="flex items-center gap-4">
@@ -40,7 +51,10 @@ export function ExerciseItem({ name, sets, reps, restTimeInSeconds }: Omit<Exerc
         </div>
       </div>
       
-      <button className="text-[#656565] hover:text-[#2b54ff] transition-colors p-1">
+      <button 
+        onClick={handleHelpClick}
+        className="text-[#656565] hover:text-[#2b54ff] transition-colors p-1"
+      >
         <HelpCircle className="w-5 h-5" />
       </button>
     </div>
