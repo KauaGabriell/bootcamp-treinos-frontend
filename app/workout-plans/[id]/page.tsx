@@ -2,12 +2,11 @@ import { getWorkoutPlan } from '@/app/_lib/api/fetch-generated';
 import { authClient } from '@/app/_lib/auth-client';
 import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
-import { ChevronLeft } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Navbar } from '@/components/navbar';
 import { WorkoutDayCard } from '@/components/workout-day-card';
-import { Badge } from '@/components/ui/badge';
+
 
 interface PageProps {
   params: Promise<{

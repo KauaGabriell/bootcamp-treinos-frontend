@@ -3,6 +3,7 @@ import { Geist, Geist_Mono, Inter_Tight, Anton } from "next/font/google";
 import "./globals.css";
 import { NuqsAdapter } from 'nuqs/adapters/next/app';
 import { ChatBot } from "@/components/chatbot";
+import { OnboardingProvider } from "@/components/onboarding-provider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -42,8 +43,10 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col font-sans">
         <NuqsAdapter>
-          {children}
-          <ChatBot />
+          <OnboardingProvider>
+            {children}
+            <ChatBot />
+          </OnboardingProvider>
         </NuqsAdapter>
       </body>
     </html>

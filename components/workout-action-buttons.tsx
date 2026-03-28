@@ -6,6 +6,7 @@ import { useState } from 'react';
 import { Button } from './ui/button';
 import dayjs from 'dayjs';
 import { cn } from '@/lib/utils';
+import { Check } from 'lucide-react';
 
 interface WorkoutActionButtonsProps {
   workoutPlanId: string;
@@ -57,17 +58,22 @@ export function WorkoutActionButtons({
   if (variant === 'card') {
     if (isCompleted) {
       return (
-        <span className="text-white/70 text-[14px] font-semibold font-[family-name:var(--font-inter-tight)]">
-          Concluído
-        </span>
+        <div className="flex flex-row justify-center items-center gap-2 w-[113px] h-[30px] p-[8px_16px] bg-[#24D500] rounded-[100px]">
+          <span className="text-white text-[12px] font-bold uppercase tracking-wide">
+            Concluído
+          </span>
+          <Check className="w-3.5 h-3.5 text-white" />
+        </div>
       );
     }
 
     if (activeSessionId) {
       return (
-        <span className="text-white/70 text-[14px] font-semibold font-[family-name:var(--font-inter-tight)] italic">
-          Em andamento...
-        </span>
+        <div className="flex flex-row justify-center items-center gap-2 w-[130px] h-[30px] p-[8px_16px] bg-white/20 backdrop-blur-md border border-white/10 rounded-[100px]">
+          <span className="text-white text-[12px] font-bold uppercase tracking-wide italic">
+            Em andamento
+          </span>
+        </div>
       );
     }
 
@@ -78,7 +84,7 @@ export function WorkoutActionButtons({
         className={cn(
           "flex flex-row justify-center items-center gap-2",
           "w-[113px] h-[30px] p-[8px_16px] bg-[#2B54FF] hover:bg-[#2B54FF]/90 rounded-[100px]",
-          "text-white text-[12px] font-bold font-[family-name:var(--font-inter-tight)] uppercase tracking-wide",
+          "text-white text-[12px] font-bold uppercase tracking-wide",
           "border-none shadow-none transition-all active:scale-95 shrink-0"
         )}
       >
@@ -92,11 +98,11 @@ export function WorkoutActionButtons({
   }
 
   return (
-    <div className="fixed bottom-[104px] left-0 right-0 px-5 z-40">
+    <div className="fixed bottom-[104px] left-1/2 -translate-x-1/2 w-full max-w-[393px] px-5 z-40">
       <Button 
         onClick={handleComplete} 
         disabled={loading}
-        className="w-full h-[38px] rounded-full bg-white border border-[#F1F1F1] text-[#656565] font-semibold flex items-center justify-center gap-2 transition-all active:scale-95 text-[14px] shadow-none hover:bg-[#F1F1F1]/50"
+        className="w-full h-[42px] rounded-full bg-white border border-[#F1F1F1] text-[#656565] font-semibold flex items-center justify-center gap-2 transition-all active:scale-95 text-[14px] shadow-sm hover:bg-[#F1F1F1]/50"
       >
         {loading ? 'Finalizando...' : 'Marcar como concluído'}
       </Button>

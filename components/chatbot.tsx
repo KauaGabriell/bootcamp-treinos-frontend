@@ -7,8 +7,8 @@ import { Sparkles, X, Send } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Streamdown } from 'streamdown';
 
-// Na v3 do @ai-sdk/react, UIMessage usa "parts" e não "content".
-// Extraímos o texto de todas as TextUIParts.
+// No AI SDK v6, UIMessage usa "parts" (array de TextUIPart, ToolUIPart, etc.)
+// e NÃO possui a propriedade "content". Extraímos o texto das TextUIParts.
 function getMessageText(parts: Array<{ type: string; text?: string }>): string {
   return parts
     .filter((p) => p.type === 'text' && p.text)
@@ -21,6 +21,7 @@ export function ChatBot() {
   const [initialMessage, setInitialMessage] = useQueryState('chat_initial_message', parseAsString);
   
   const [inputValue, setInputValue] = useState('');
+  const initialMessageSentRef = useRef(false);
 
   // Estabilidade referencial: mesma instância do transport em todos os renders,
   // evitando que o useChat perca o estado interno (this.state) do transport.
@@ -28,31 +29,41 @@ export function ChatBot() {
     () =>
       new DefaultChatTransport({
         api: `${process.env.NEXT_PUBLIC_API_URL}/ai`,
-        credentials: "include",
+        credentials: 'include',
       }),
     [],
   );
 
-  const { messages, sendMessage, status } = useChat({ transport });
+  const { messages, sendMessage, status } = useChat({
+    transport,
+    onError: (error) => {
+      console.error('Erro no stream da IA:', error);
+    },
+  });
 
   const isLoading = status === 'submitted' || status === 'streaming';
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  // Auto-send initial message if present
+  // 1. Tratamento de Mensagem Inicial
   useEffect(() => {
-    if (isOpen && initialMessage) {
+    if (isOpen && initialMessage && !initialMessageSentRef.current && typeof sendMessage === 'function') {
+      initialMessageSentRef.current = true;
       const msg = initialMessage;
       setInitialMessage(null);
       sendMessage({ text: msg });
     }
+
+    if (!isOpen) {
+      initialMessageSentRef.current = false;
+    }
   }, [isOpen, initialMessage, sendMessage, setInitialMessage]);
 
-  // Scroll to bottom
+  // 2. Scroll Automático
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
-  }, [messages]);
+  }, [messages, isLoading]);
 
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -69,7 +80,7 @@ export function ChatBot() {
       <div className="w-full max-w-[361px] h-[625px] bg-white rounded-[20px] flex flex-col shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200">
         {/* Header */}
         <header className="flex items-center justify-between px-5 py-4 border-b border-[#F1F1F1] shrink-0">
-          <div className="flex items-center gap-2 flex-1 justify-center">
+          <div className="flex items-center gap-2 flex-1 justify-center pl-8">
             <div className="w-[42px] h-[42px] flex items-center justify-center bg-[#2B54FF]/[0.08] border border-[#2B54FF]/[0.08] rounded-full">
               <Sparkles className="w-[18px] h-[18px] text-[#2B54FF]" />
             </div>
@@ -89,7 +100,7 @@ export function ChatBot() {
           </button>
         </header>
 
-        {/* Messages */}
+        {/* Messages List */}
         <div 
           ref={scrollRef}
           className="flex-1 overflow-y-auto p-5 flex flex-col gap-4 scroll-smooth"
@@ -113,7 +124,7 @@ export function ChatBot() {
               <div 
                 className={`p-3 rounded-[12px] text-[14px] leading-relaxed ${
                   m.role === 'user' 
-                    ? 'bg-[#2B54FF] text-white' 
+                    ? 'bg-[#2B54FF] text-white shadow-sm' 
                     : 'bg-[#F1F1F1] text-black'
                 }`}
               >
@@ -123,11 +134,11 @@ export function ChatBot() {
           ))}
           
           {isLoading && (
-            <div className="flex items-start pr-12">
+            <div className="flex items-start pr-12 animate-in fade-in duration-300">
               <div className="p-3 rounded-[12px] bg-[#F1F1F1] flex gap-1">
-                <div className="w-1.5 h-1.5 bg-[#2B54FF] rounded-full animate-bounce" />
-                <div className="w-1.5 h-1.5 bg-[#2B54FF] rounded-full animate-bounce [animation-delay:0.2s]" />
-                <div className="w-1.5 h-1.5 bg-[#2B54FF] rounded-full animate-bounce [animation-delay:0.4s]" />
+                <div className="w-1.5 h-1.5 bg-[#2B54FF] rounded-full animate-bounce [animation-duration:0.8s]" />
+                <div className="w-1.5 h-1.5 bg-[#2B54FF] rounded-full animate-bounce [animation-duration:0.8s] [animation-delay:0.2s]" />
+                <div className="w-1.5 h-1.5 bg-[#2B54FF] rounded-full animate-bounce [animation-duration:0.8s] [animation-delay:0.4s]" />
               </div>
             </div>
           )}

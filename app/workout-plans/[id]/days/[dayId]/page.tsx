@@ -44,17 +44,16 @@ export default async function WorkoutDayPage({ params }: PageProps) {
 
   const workoutDay = response.data;
   
-
   // Lógica de sessões
   const activeSession = workoutDay.sessions.find(s => !s.completedAt);
   const completedSession = workoutDay.sessions.find(s => s.completedAt);
 
   const dayNamesFull: Record<string, string> = {
-    MONDAY: 'Segunda-feira',
-    TUESDAY: 'Terça-feira',
-    WEDNESDAY: 'Quarta-feira',
-    THURSDAY: 'Quinta-feira',
-    FRIDAY: 'Sexta-feira',
+    MONDAY: 'Segunda',
+    TUESDAY: 'Terça',
+    WEDNESDAY: 'Quarta',
+    THURSDAY: 'Quinta',
+    FRIDAY: 'Sexta',
     SATURDAY: 'Sábado',
     SUNDAY: 'Domingo',
   };
@@ -62,75 +61,80 @@ export default async function WorkoutDayPage({ params }: PageProps) {
   const dayNamePt = dayNamesFull[workoutDay.weekDay] || workoutDay.weekDay;
 
   return (
-    <main className="min-h-screen bg-white pb-40">
+    <main className="min-h-screen bg-white pb-40 font-[family-name:var(--font-inter-tight)]">
       {/* Top Navigation */}
       <div className="px-5 pt-[60px] pb-6 flex items-center justify-center relative">
         <Link href="/" className="absolute left-5 flex items-center justify-center w-10 h-10 rounded-full bg-[#f1f1f1] text-black hover:bg-zinc-200 transition-all">
           <ChevronLeft className="w-6 h-6" />
         </Link>
-        <h2 className="text-[18px] font-semibold text-black font-[family-name:var(--font-inter-tight)]">
+        <h2 className="text-[18px] font-semibold text-black leading-tight">
           Treino de Hoje
         </h2>
       </div>
 
       {/* Main Workout Card */}
       <section className="px-5">
-        <div className="relative h-[240px] w-full overflow-hidden rounded-[16px] shadow-sm">
+        <div className="relative h-[296px] w-full overflow-hidden rounded-[20px] shadow-sm">
           <Image
             src={workoutDay.coverImageUrl || "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=1470&auto=format&fit=crop"}
             alt={workoutDay.name}
             fill
             className="object-cover"
             priority
+            unoptimized
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent opacity-90" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-100" />
           
-          {/* Day Pill (Top Left) */}
-          <div className="absolute top-4 left-5 z-20">
-            <div className="bg-white/20 backdrop-blur-md px-3 py-1 rounded-full flex items-center gap-1.5 border border-white/10">
-              <Calendar className="w-3.5 h-3.5 text-white" />
-              <span className="text-[11px] text-white font-bold uppercase tracking-wider">
-                {dayNamePt}
-              </span>
-            </div>
-          </div>
-
-          {/* Content inside Card */}
-          <div className="absolute bottom-6 left-5 right-5 z-10 flex items-end justify-between gap-4">
-            <div className="flex flex-col gap-1">
-              <h1 className="text-white text-[24px] font-bold font-[family-name:var(--font-inter-tight)] leading-tight tracking-tight">
-                {workoutDay.name}
-              </h1>
-              <div className="flex gap-4">
-                <div className="flex items-center gap-1.5">
-                  <Timer className="w-4 h-4 text-white/70" />
-                  <span className="text-white/70 text-sm font-[family-name:var(--font-inter-tight)]">
-                    {Math.floor(workoutDay.estimatedDurationInSeconds / 60)}min
-                  </span>
-                </div>
-                <div className="flex items-center gap-1.5">
-                  <Dumbbell className="w-4 h-4 text-white/70" />
-                  <span className="text-white/70 text-sm font-[family-name:var(--font-inter-tight)]">
-                    {workoutDay.exercises.length} exercícios
-                  </span>
-                </div>
+          <div className="absolute inset-0 flex flex-col justify-between p-5 pt-8">
+            {/* Day Pill (Top Left) */}
+            <div className="flex justify-start">
+              <div className="bg-white/16 backdrop-blur-[4px] px-[10px] py-[5px] rounded-full flex items-center gap-1">
+                <Calendar className="w-3.5 h-3.5 text-white" />
+                <span className="text-[12px] text-white font-semibold uppercase leading-none">
+                  {dayNamePt}
+                </span>
               </div>
             </div>
 
-            <WorkoutActionButtons
-              workoutPlanId={id}
-              workoutDayId={dayId}
-              activeSessionId={activeSession?.id}
-              isCompleted={!!completedSession}
-              variant="card"
-            />
+            {/* Content bottom */}
+            <div className="flex flex-col gap-2">
+              <div className="flex flex-col gap-2">
+                <h1 className="text-white text-[24px] font-semibold leading-[105%]">
+                  {workoutDay.name}
+                </h1>
+                <div className="flex gap-2">
+                  <div className="flex items-center gap-1 px-0">
+                    <Timer className="w-[14px] h-[14px] text-white/70" />
+                    <span className="text-white/70 text-[12px] font-normal leading-[140%]">
+                      {Math.floor(workoutDay.estimatedDurationInSeconds / 60)}min
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-1 px-0">
+                    <Dumbbell className="w-[14px] h-[14px] text-white/70" />
+                    <span className="text-white/70 text-[12px] font-normal leading-[140%]">
+                      {workoutDay.exercises.length} exercícios
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-2">
+                <WorkoutActionButtons
+                  workoutPlanId={id}
+                  workoutDayId={dayId}
+                  activeSessionId={activeSession?.id}
+                  isCompleted={!!completedSession}
+                  variant="card"
+                />
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
       {/* Exercises List */}
-      <section className="px-5 mt-10 flex flex-col gap-4">
-        <h2 className="text-[18px] font-semibold text-black font-[family-name:var(--font-inter-tight)]">
+      <section className="px-5 mt-8 flex flex-col gap-3">
+        <h2 className="text-[18px] font-semibold text-black leading-tight">
           Exercícios
         </h2>
         
